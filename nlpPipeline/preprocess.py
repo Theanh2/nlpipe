@@ -1,11 +1,3 @@
-#Tokenizer
-def tokenize(input):
-    """word tokenizer with nltk
-
-    """
-    from nltk import word_tokenize
-    return word_tokenize(input)
-
 #Part of Speech Tag
 def POS(input):
     """Parts of Speech Tag with nltk
