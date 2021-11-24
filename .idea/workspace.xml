@@ -4,10 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b395a52a-8802-4335-b6f1-681972b90be0" name="Changes" comment="11.11 Started Tokenizer Pipeline">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/nlpPipeline/Token.py" beforeDir="false" afterPath="$PROJECT_DIR$/nlpPipeline/Token.py" afterDir="false" />
-    </list>
+    <list default="true" id="b395a52a-8802-4335-b6f1-681972b90be0" name="Changes" comment="25.11 Tokenization Pipeline nearly done, figuring out multiple kwargs in single function" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -228,7 +225,14 @@
       <option name="project" value="LOCAL" />
       <updated>1632745036703</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="25.11 Tokenization Pipeline nearly done, figuring out multiple kwargs in single function">
+      <created>1637797585057</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1637797585057</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -259,7 +263,8 @@
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
     <MESSAGE value="Project start" />
     <MESSAGE value="27.09 14.16 preprocessing functions parts" />
-    <option name="LAST_COMMIT_MESSAGE" value="27.09 14.16 preprocessing functions parts" />
+    <MESSAGE value="25.11 Tokenization Pipeline nearly done, figuring out multiple kwargs in single function" />
+    <option name="LAST_COMMIT_MESSAGE" value="25.11 Tokenization Pipeline nearly done, figuring out multiple kwargs in single function" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
