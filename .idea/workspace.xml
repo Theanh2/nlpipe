@@ -4,15 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b395a52a-8802-4335-b6f1-681972b90be0" name="Changes" comment="27.09 14.16 preprocessing functions parts">
-      <change afterPath="$PROJECT_DIR$/nlpPipeline/Models.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/nlpPipeline/Token.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/nlpPipeline/finetune.py" afterDir="false" />
+    <list default="true" id="b395a52a-8802-4335-b6f1-681972b90be0" name="Changes" comment="11.11 Started Tokenizer Pipeline">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/nlpPipeline/Vectorize.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/nlpPipeline/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/nlpPipeline/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/nlpPipeline/preprocess.py" beforeDir="false" afterPath="$PROJECT_DIR$/nlpPipeline/preprocess.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/nlpPipeline/Token.py" beforeDir="false" afterPath="$PROJECT_DIR$/nlpPipeline/Token.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -26,10 +20,13 @@
       </list>
     </option>
   </component>
+  <component name="Git.Merge.Settings">
+    <option name="BRANCH" value="coding" />
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="coding" />
+        <entry key="$PROJECT_DIR$" value="master" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -195,8 +192,8 @@
       <list>
         <item itemvalue="Python.Token" />
         <item itemvalue="Python.scikit" />
-        <item itemvalue="Python.finetune" />
         <item itemvalue="Python.Models" />
+        <item itemvalue="Python.finetune" />
         <item itemvalue="Python.tests" />
       </list>
     </recent_temporary>
@@ -263,5 +260,16 @@
     <MESSAGE value="Project start" />
     <MESSAGE value="27.09 14.16 preprocessing functions parts" />
     <option name="LAST_COMMIT_MESSAGE" value="27.09 14.16 preprocessing functions parts" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <default-breakpoints>
+        <breakpoint type="python-exception">
+          <properties notifyOnTerminate="true" exception="BaseException">
+            <option name="notifyOnTerminate" value="true" />
+          </properties>
+        </breakpoint>
+      </default-breakpoints>
+    </breakpoint-manager>
   </component>
 </project>
