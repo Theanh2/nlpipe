@@ -178,12 +178,12 @@
       <method v="2" />
     </configuration>
     <list>
-      <item itemvalue="Python.main" />
-      <item itemvalue="Python.tests" />
+      <item itemvalue="Python.Models" />
       <item itemvalue="Python.Token" />
       <item itemvalue="Python.finetune" />
-      <item itemvalue="Python.Models" />
+      <item itemvalue="Python.main" />
       <item itemvalue="Python.scikit" />
+      <item itemvalue="Python.tests" />
     </list>
     <recent_temporary>
       <list>
