@@ -214,7 +214,7 @@ class nlpipe:
         print("confusion matrix (Logistic Regression):")
         print(metrics.confusion_matrix(self.test_data[target_column], predicted))
 
-    def run_extractor(self,extractor, column):
+    def run_extractor(self,data = self.data, extractor, column):
         """
         returns extracted Features
         See official documentation for CountVectorizer and TFIDFvectorizer
@@ -222,33 +222,9 @@ class nlpipe:
         https://scikit-learn.org/stable/modules/generated/sklearn.feature_extraction.text.TfidfTransformer.html#sklearn.feature_extraction.text.TfidfTransformer
         """
         self.extractor = SUPPORTED_VECTORIZER[extractor]()
-        self.extracted = self.extractor.fit_transform(self.data[column])
+        self.extracted = self.extractor.fit_transform(data[column])
         return self.extracted
 
-    #change after initializing
-    def set_seq(self, seq):
-        """
-        stop word removal
-        stemming
-        lemmatization
-        """
-        self.pre_processing_seq = seq
-
-    def set_model(self, model):
-        """
-        supervised:
-        Logistic Regression model
-        Naive Bayes
-        Random Forest
-        SVMs
-
-        unsupervised:
-        BERT
-        RoBERTa
-        ALBERT
-
-        """
-        self.model = model
 
     def set_tokenizer(self,Transformer = None, from_file = None):
         """
@@ -267,10 +243,11 @@ class nlpipe:
 x = nlpipe()
 x.load_data('glue', 'mrpc', split='train')
 x.split_data(test_size = 0.1, seed = 1221, shuffle = False)
-x.logistic('sentence1', 'label', 'BOW')
-x.NaiveB('sentence1', 'label', 'TFIDF')
-x.Randomforest('sentence1', 'label', 'BOW', n_estimators = 1000)
-x.linearSVM('sentence1', 'label', 'BOW',loss='log')
+print(x.run_extractor("BOW", 'sentence1'))
+# x.logistic('sentence1', 'label', 'BOW')
+# x.NaiveB('sentence1', 'label', 'TFIDF')
+# x.Randomforest('sentence1', 'label', 'BOW', n_estimators = 1000)
+# x.linearSVM('sentence1', 'label', 'BOW',loss='log')
 
 
 #tokenizer = Tokenizer.from_file("C:/Users/thean/Documents/tests/wikitext-103-raw/trained_tokenizer.json")

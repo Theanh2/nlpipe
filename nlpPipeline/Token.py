@@ -113,15 +113,16 @@ def Init_token(token, **kwargs):
 
 #-------------------------------------------------------------------------------------------------------------------------
 
-def Init_post_token(tokenizer, post):
-    tokenizer.post_processor = TemplateProcessing(
-        single="[CLS] $A [SEP]",
-        pair="[CLS] $A [SEP] $B:1 [SEP]:1",
-        special_tokens=[
-            ("[CLS]", 1),
-            ("[SEP]", 2),
-        ],
+def Init_post_token(tokenizer, **kwargs):
+    tokenizer.post_processor = TemplateProcessing(**kwargs
     )
+
+        # single="[CLS] $A [SEP]",
+        # pair="[CLS] $A [SEP] $B:1 [SEP]:1",
+        # special_tokens=[
+        #     ("[CLS]", 1),
+        #     ("[SEP]", 2),
+        # ]
 #-------------------------------------------------------------------------------------------------------------------------
 
 def Init_trainer(trainer, **kwargs):
@@ -158,33 +159,27 @@ def token_nlpipe(
         Normalizer = None,
         save = False,
         path = None,
-        **kwargs
+        token_param = None,
+        train_param = None,
+        post_param = None,
 ):
     """
     Wrapper function for training tokenization with tokenizers package
     See official documentation on:
     https://huggingface.co/docs/tokenizers/python/latest/
-
-    :param
-    :param
-    :param
-    :param
-    :param
-    :param
-    :return saves tokenizer in specified path, returns tokenizer
     """
-    files = [file_path]
+    files = file_path
     cpath = os.getcwd()
 
-    tnz = Init_token(tokenizer, **kwargs)
+    tnz = Init_token(tokenizer, **token_param)
     if Normalizer is not None:
         tnz = Init_norm(tnz, Normalizer)
     if pre_tokenizer is not None:
         tnz = Init_pre_token(tnz, pre_tokenizer)
     if post_tokenizer is not None:
-        tnz = Init_post_token(tnz, post)
+        tnz = Init_post_token(tnz, **post_param)
 
-    train = Init_trainer(trainer,**kwargs)
+    train = Init_trainer(trainer,**train_param)
 
     tnz.train(files, train)
 
@@ -217,18 +212,27 @@ def token_nlpipe(
 # tokenizer = Tokenizer.from_file("C:/Users/thean/Documents/tests/wikitext-103-raw/tokenizer-wiki.json")
 # output = tokenizer.encode("Simple is How are you 😁 ?")
 # print(output.tokens)
+#[f"C:/Users/thean/Documents/tests/wikitext-103-raw/wiki.{split}.raw" for split in ["test", "train", "valid"]]
+#"C:/Users/thean/Documents/tests/wikitext-103-raw/wiki.test.raw"
 
-token_nlpipe(file_path = "C:/Users/thean/Documents/tests/wikitext-103-raw/wiki.test.raw",
+load_dataset
+
+token_nlpipe(file_path = ["C:/Users/thean/Documents/tests/wikitext-103-raw/wiki.test.raw"],
              tokenizer = "BPE",
-             unk_token = "[UNK]",
              trainer = "BpeTrainer",
-             special_tokens=["[UNK]", "[CLS]", "[SEP]", "[PAD]", "[MASK]"],
              pre_tokenizer = "Whitespace",
-             Normalizer = [Lowercase()],
+             Normalizer = [NFD(), Lowercase(), StripAccents()],
              save = True,
-             path = "C:/Users/thean/Documents/tests/wikitext-103-raw/"
+             path = "C:/Users/thean/Documents/tests/wikitext-103-raw/",
+             token_param = {"unk_token": "[UNK]"},
+             train_param = {"vocab_size": 30522,
+                            "special_tokens": ["[UNK]", "[CLS]", "[SEP]", "[PAD]", "[MASK]"]},
+             post_param = {"single":["[CLS] $A [SEP]"],
+                           "pair": ["[CLS] $A [SEP] $B:1 [SEP]:1"],
+                           "special_tokens": [("[CLS]", 1),("[SEP]", 2),]
+                           }
 )
 
-tokenizer = Tokenizer.from_file("C:/Users/thean/Documents/tests/wikitext-103-raw/trained_tokenizer.json")
-output = tokenizer.encode("Simple is How are you 😁 ?")
-print(output.tokens)
+#tokenizer = Tokenizer.from_file("C:/Users/thean/Documents/tests/wikitext-103-raw/trained_tokenizer.json")
+#output = tokenizer.encode("Simple is How are you 😁 ?")
+#print(output.tokens)
