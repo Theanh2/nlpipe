@@ -13,12 +13,15 @@ test_list = [
 
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 from sklearn.naive_bayes import MultinomialNB
-from sklearn.svm import SVC
+from sklearn.linear_model import SGDClassifier
+from sklearn.ensemble import RandomForestClassifier
+from sklearn import metrics
 from transformers import PreTrainedTokenizerFast, AutoTokenizer
 from datasets import load_dataset
 from tokenizers import Tokenizer
 from nltk.tokenize import word_tokenize
 from nltk import PorterStemmer, LancasterStemmer, Cistem, RSLPStemmer, SnowballStemmer, WordNetLemmatizer
+
 
 SUPPORTED_STEMMER = {
         "Cistem": Cistem,
@@ -32,29 +35,10 @@ SUPPORTED_LEMMA = {"WordNet": WordNetLemmatizer}
 SUPPORTED_VECTORIZER = {
     "BOW": CountVectorizer,
     "TFIDF": TfidfVectorizer
-
 }
 
-
 #-------------------------------------------------------------------------------------------------------------------------
-#Count Vectorizer (BOW)
-
-def Countvec(data):
-    vectorizer = CountVectorizer()
-    out = vectorizer.fit_transform(data)
-    return out
-#print(Countvec(test_list))
-
-#-------------------------------------------------------------------------------------------------------------------------
-#tf-idf vectorizer
-def TFIDF(data):
-    vectorizer = TfidfVectorizer()
-    out = vectorizer.fit_transform(data)
-    return out
-#print(TFIDF(test_list))
-
-#-------------------------------------------------------------------------------------------------------------------------
-#stemming mapping
+#Processing help function, supports stop word removal, stemmer and lemmatizer from nltk package
 def processing(example, column,stoplist = None, stemmer = None, lemmatizer = None, languageSnowball = 'english'):
     """
     Pre-processing Pipeline with stopword removal, stemmer and lemmatizer
@@ -92,30 +76,25 @@ def processing(example, column,stoplist = None, stemmer = None, lemmatizer = Non
 #random forest
 
 #-------------------------------------------------------------------------------------------------------------------------
-#logistics regression
+#logistic regression
 
 #-------------------------------------------------------------------------------------------------------------------------
-#word2vec,CBOW, skipgram
 
-#-------------------------------------------------------------------------------------------------------------------------
-#Naive Bayes
-
-#-------------------------------------------------------------------------------------------------------------------------
-#SVM
-#-------------------------------------------------------------------------------------------------------------------------
-
-tokenizer = Tokenizer.from_file("C:/Users/thean/Documents/tests/wikitext-103-raw/trained_tokenizer.json")
-fast_tokenizer = PreTrainedTokenizerFast(tokenizer_object=tokenizer)
-#
-#dataset = load_dataset('glue', 'mrpc', split='train')
 class nlpipe:
 
-    processed_data = None
+    Naiveclassifier = None
+    Logisticclassifier = None
+    SVMclassifier = None
+    Randomclassifier = None
     extracted = None
-    def __init__(self, tokenizer = None,data = None, model = None):
+    train_data = None
+    test_data = None
+
+    def __init__(self, tokenizer = None,data = None, model = None, extractor = None):
         self.tokenizer = tokenizer
         self.model = model
         self.data = data
+        self.extractor = extractor
 
     def load_data(self, *args, **kwargs):
         """
@@ -125,6 +104,14 @@ class nlpipe:
         """
         self.data = load_dataset(*args, **kwargs)
 
+    def split_data(self,**kwargs):
+        """
+        see official train_test_split for more information about parameters
+        https://huggingface.co/docs/datasets/package_reference/main_classes.html#datasets.Dataset.train_test_split
+        """
+        temp = self.data.train_test_split(**kwargs)
+        self.train_data = temp["train"]
+        self.test_data = temp["test"]
 
     def run_token(self,column, batched = False):
         self.data = self.data.map(lambda examples: self.tokenizer(examples[column]),
@@ -140,8 +127,102 @@ class nlpipe:
                                                             )
         )
 
-    def run_extractor(self, column):
-        self.extracted = self.tokenizer.fit_transform(self.data[column])
+    def Randomforest(self,feature_column, target_column, extractor, **kwargs):
+        """
+        https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html
+        """
+        if self.train_data is None:
+            return
+
+        self.extractor = SUPPORTED_VECTORIZER[extractor]()
+
+        train_vec = self.extractor.fit_transform(self.train_data[feature_column])
+        self.Randomclassifier = RandomForestClassifier(**kwargs).fit(train_vec, self.train_data[target_column])
+
+        test_vec = self.extractor.transform(self.test_data[feature_column])
+        predicted = self.Randomclassifier.predict(test_vec)
+
+        print("classification report (Random Forest):")
+        print(metrics.classification_report(self.test_data[target_column], predicted))
+        print("confusion matrix (Random Forest):")
+        print(metrics.confusion_matrix(self.test_data[target_column], predicted))
+
+    def linearSVM(self,feature_column, target_column, extractor, **kwargs):
+        """
+        linear SVM by default with stochastic gradient descent
+        https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.SGDClassifier.html
+        optional parameters for SGD training
+        """
+        if self.train_data is None:
+            return
+
+        self.extractor = SUPPORTED_VECTORIZER[extractor]()
+
+        train_vec = self.extractor.fit_transform(self.train_data[feature_column])
+        self.SVMclassifier = SGDClassifier(**kwargs).fit(train_vec, self.train_data[target_column])
+
+        test_vec = self.extractor.transform(self.test_data[feature_column])
+        predicted = self.SVMclassifier.predict(test_vec)
+
+        print("classification report (SVM):")
+        print(metrics.classification_report(self.test_data[target_column], predicted))
+        print("confusion matrix (SVM):")
+        print(metrics.confusion_matrix(self.test_data[target_column], predicted))
+
+
+    def NaiveB(self,feature_column, target_column, extractor, **kwargs):
+        """
+        Parameters for MultinomialNB()
+        https://scikit-learn.org/stable/modules/generated/sklearn.naive_bayes.MultinomialNB.html#sklearn.naive_bayes.MultinomialNB
+        """
+        if self.train_data is None:
+            return
+
+        self.extractor = SUPPORTED_VECTORIZER[extractor]()
+
+        train_vec = self.extractor.fit_transform(self.train_data[feature_column])
+        self.Naiveclassifier = MultinomialNB(**kwargs).fit(train_vec, self.train_data[target_column])
+
+        test_vec = self.extractor.transform(self.test_data[feature_column])
+        predicted = self.Naiveclassifier.predict(test_vec)
+
+        print("classification report (Naive Bayes):")
+        print(metrics.classification_report(self.test_data[target_column], predicted))
+        print("confusion matrix (Naive Bayes):")
+        print(metrics.confusion_matrix(self.test_data[target_column], predicted))
+
+    def logistic(self, feature_column, target_column, extractor, **kwargs):
+        """
+        Parameters for LogisticRegression()
+        https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.SGDClassifier.html
+        'log' loss for logistic regression
+        optional parameters for SGD training
+        """
+        if self.train_data is None:
+            return
+
+        self.extractor = SUPPORTED_VECTORIZER[extractor]()
+
+        train_vec = self.extractor.fit_transform(self.train_data[feature_column])
+        self.Logisticclassifier = SGDClassifier(loss = 'log', **kwargs).fit(train_vec, self.train_data[target_column])
+
+        test_vec = self.extractor.transform(self.test_data[feature_column])
+        predicted = self.Logisticclassifier.predict(test_vec)
+
+        print("classification report (Logistic Regression):")
+        print(metrics.classification_report(self.test_data[target_column], predicted))
+        print("confusion matrix (Logistic Regression):")
+        print(metrics.confusion_matrix(self.test_data[target_column], predicted))
+
+    def run_extractor(self,extractor, column):
+        """
+        returns extracted Features
+        See official documentation for CountVectorizer and TFIDFvectorizer
+        https://scikit-learn.org/stable/modules/generated/sklearn.feature_extraction.text.CountVectorizer.html#sklearn.feature_extraction.text.CountVectorizer
+        https://scikit-learn.org/stable/modules/generated/sklearn.feature_extraction.text.TfidfTransformer.html#sklearn.feature_extraction.text.TfidfTransformer
+        """
+        self.extractor = SUPPORTED_VECTORIZER[extractor]()
+        self.extracted = self.extractor.fit_transform(self.data[column])
         return self.extracted
 
     #change after initializing
@@ -169,12 +250,10 @@ class nlpipe:
         """
         self.model = model
 
-    def set_tokenizer(self,Vectorizer = None ,Transformer = None, from_file = None):
+    def set_tokenizer(self,Transformer = None, from_file = None):
         """
         Set Tokenizer from file (tokenizers package) or uses Autotokenizer with a model from https://huggingface.co/models
         """
-        if Vectorizer is not None:
-            self.tokenizer = SUPPORTED_VECTORIZER[Vectorizer]()
 
         if from_file is not None:
             tokenizer = Tokenizer.from_file(from_file)
@@ -184,21 +263,16 @@ class nlpipe:
             self.tokenizer = AutoTokenizer.from_pretrained(Transformer)
 
 
-    def run_model_pipe(self, model=None, metric=None):
-        """
-        :param data from datasets class
-        """
-        #Run preprocessing
-
-        #run model
-        #cross validation
-        #random seed
-#amrozi accus hi brother , whom he call `` the wit `` , of deliber distort hi evid .
-
-english_sw = ["his", "brother"]
 
 x = nlpipe()
 x.load_data('glue', 'mrpc', split='train')
-x.set_tokenizer(Vectorizer = "BOW")
-print(x.run_extractor('sentence1'))
+x.split_data(test_size = 0.1, seed = 1221, shuffle = False)
+x.logistic('sentence1', 'label', 'BOW')
+x.NaiveB('sentence1', 'label', 'TFIDF')
+x.Randomforest('sentence1', 'label', 'BOW', n_estimators = 1000)
+x.linearSVM('sentence1', 'label', 'BOW',loss='log')
+
+
+#tokenizer = Tokenizer.from_file("C:/Users/thean/Documents/tests/wikitext-103-raw/trained_tokenizer.json")
+
 

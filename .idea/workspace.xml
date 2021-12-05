@@ -4,12 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b395a52a-8802-4335-b6f1-681972b90be0" name="Changes" comment="25.11 Tokenization Pipeline nearly done, figuring out multiple kwargs in single function">
+    <list default="true" id="b395a52a-8802-4335-b6f1-681972b90be0" name="Changes" comment="03.12. nlpipe halfway running, models missing">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/nlpPipeline/Models.py" beforeDir="false" afterPath="$PROJECT_DIR$/nlpPipeline/nlpipe.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/nlpPipeline/finetune.py" beforeDir="false" afterPath="$PROJECT_DIR$/nlpPipeline/finetune.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/nlpPipeline/preprocess.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/nlpPipeline/tests.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/nlpPipeline/nlpipe.py" beforeDir="false" afterPath="$PROJECT_DIR$/nlpPipeline/nlpipe.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/nlpPipeline/scikit.py" beforeDir="false" afterPath="$PROJECT_DIR$/nlpPipeline/scikit.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -245,7 +243,14 @@
       <option name="project" value="LOCAL" />
       <updated>1637797849045</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="03.12. nlpipe halfway running, models missing">
+      <created>1638652455299</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1638652455299</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -277,7 +282,8 @@
     <MESSAGE value="Project start" />
     <MESSAGE value="27.09 14.16 preprocessing functions parts" />
     <MESSAGE value="25.11 Tokenization Pipeline nearly done, figuring out multiple kwargs in single function" />
-    <option name="LAST_COMMIT_MESSAGE" value="25.11 Tokenization Pipeline nearly done, figuring out multiple kwargs in single function" />
+    <MESSAGE value="03.12. nlpipe halfway running, models missing" />
+    <option name="LAST_COMMIT_MESSAGE" value="03.12. nlpipe halfway running, models missing" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
