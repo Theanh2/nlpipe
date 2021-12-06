@@ -13,15 +13,17 @@ test_list = [
 
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 from sklearn.naive_bayes import MultinomialNB
-from sklearn.linear_model import SGDClassifier
+from sklearn.linear_model import SGDClassifier, LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
 from sklearn import metrics
+from sklearn.model_selection import cross_val_score,ShuffleSplit, GridSearchCV
+from sklearn.svm import SVC
 from transformers import PreTrainedTokenizerFast, AutoTokenizer
 from datasets import load_dataset
 from tokenizers import Tokenizer
 from nltk.tokenize import word_tokenize
 from nltk import PorterStemmer, LancasterStemmer, Cistem, RSLPStemmer, SnowballStemmer, WordNetLemmatizer
-
+import pandas as pd
 
 SUPPORTED_STEMMER = {
         "Cistem": Cistem,
@@ -36,6 +38,12 @@ SUPPORTED_VECTORIZER = {
     "BOW": CountVectorizer,
     "TFIDF": TfidfVectorizer
 }
+
+SUPPORTED_MODELS = {"NaiveBayes": MultinomialNB,
+                    "logistic": LogisticRegression,
+                    "SVM": SVC,
+                    "RandomForest": RandomForestClassifier
+                    }
 
 #-------------------------------------------------------------------------------------------------------------------------
 #Processing help function, supports stop word removal, stemmer and lemmatizer from nltk package
@@ -81,7 +89,7 @@ def processing(example, column,stoplist = None, stemmer = None, lemmatizer = Non
 #-------------------------------------------------------------------------------------------------------------------------
 
 class nlpipe:
-
+    grid = None
     Naiveclassifier = None
     Logisticclassifier = None
     SVMclassifier = None
@@ -169,6 +177,38 @@ class nlpipe:
         print("confusion matrix (SVM):")
         print(metrics.confusion_matrix(self.test_data[target_column], predicted))
 
+    def gridsearch(self, feature_column, target_column,extractor,model, grid, cv = 5, n_jobs = 1, refit = True, scoring = None, **kwargs):
+
+        self.extractor = SUPPORTED_VECTORIZER[extractor]()
+
+        vec = self.extractor.fit_transform(self.data[feature_column])
+        model = SUPPORTED_MODELS[model](**kwargs)
+        gs = GridSearchCV(model,grid,cv = cv, n_jobs = n_jobs, refit = refit, scoring = scoring).fit(vec, self.data[target_column])
+        self.grid = pd.DataFrame(gs.cv_results_)
+        print("Best Parameter in search: (best to worst rank)")
+        print(self.grid.sort_values("rank_test_score", ascending = True)["params"])
+        return self.grid
+
+    def cv(self, feature_column, target_column,extractor,model, shuffle = False, cv = 5, test_size=0.3, random_state=0, **kwargs):
+
+        self.extractor = SUPPORTED_VECTORIZER[extractor]()
+        temp = cv
+        vec = self.extractor.fit_transform(self.data[feature_column])
+        model = SUPPORTED_MODELS[model](**kwargs)
+
+        cv_shuffle = ShuffleSplit(n_splits=cv, test_size=test_size, random_state=random_state)
+        if shuffle == True:
+            cv = cv_shuffle
+
+        scores = cross_val_score(model, vec, self.data[target_column], cv = cv)
+        print(str(model))
+        print("shuffle: " + str(shuffle))
+        print(str(temp) + " repeats")
+        print(scores)
+        print("%0.2f accuracy with a standard deviation of %0.2f" % (scores.mean(), scores.std()))
+        return scores
+
+
 
     def NaiveB(self,feature_column, target_column, extractor, **kwargs):
         """
@@ -214,7 +254,7 @@ class nlpipe:
         print("confusion matrix (Logistic Regression):")
         print(metrics.confusion_matrix(self.test_data[target_column], predicted))
 
-    def run_extractor(self,data = self.data, extractor, column):
+    def run_extractor(self, extractor, column):
         """
         returns extracted Features
         See official documentation for CountVectorizer and TFIDFvectorizer
@@ -222,7 +262,7 @@ class nlpipe:
         https://scikit-learn.org/stable/modules/generated/sklearn.feature_extraction.text.TfidfTransformer.html#sklearn.feature_extraction.text.TfidfTransformer
         """
         self.extractor = SUPPORTED_VECTORIZER[extractor]()
-        self.extracted = self.extractor.fit_transform(data[column])
+        self.extracted = self.extractor.fit_transform(self.data[column])
         return self.extracted
 
 
@@ -238,18 +278,19 @@ class nlpipe:
         if Transformer is not None:
             self.tokenizer = AutoTokenizer.from_pretrained(Transformer)
 
-
+param_grid = {'kernel': ('linear', 'rbf'),
+              'C': [1, 10, 100]}
 
 x = nlpipe()
 x.load_data('glue', 'mrpc', split='train')
-x.split_data(test_size = 0.1, seed = 1221, shuffle = False)
-print(x.run_extractor("BOW", 'sentence1'))
-# x.logistic('sentence1', 'label', 'BOW')
+x.split_data(test_size = 0.3, seed = 1221, shuffle = False)
+#x.logistic('sentence1', 'label', 'BOW')
 # x.NaiveB('sentence1', 'label', 'TFIDF')
 # x.Randomforest('sentence1', 'label', 'BOW', n_estimators = 1000)
 # x.linearSVM('sentence1', 'label', 'BOW',loss='log')
+#x.cv('sentence1', 'label', 'BOW',"SVM",shuffle = True, cv = 3)
+x.gridsearch('sentence1', 'label', 'BOW',"SVM",param_grid, cv = 2 )
 
 
 #tokenizer = Tokenizer.from_file("C:/Users/thean/Documents/tests/wikitext-103-raw/trained_tokenizer.json")
-
 

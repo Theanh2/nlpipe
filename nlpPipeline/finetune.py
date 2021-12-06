@@ -2,17 +2,11 @@ from transformers import AutoTokenizer
 from datasets import load_dataset
 import torch
 from transformers import (AutoModel,
-        AutoModelForAudioClassification,
         AutoModelForCausalLM,
-        AutoModelForCTC,
-        AutoModelForImageClassification,
-        AutoModelForImageSegmentation,
         AutoModelForMaskedLM,
-        AutoModelForObjectDetection,
         AutoModelForQuestionAnswering,
         AutoModelForSeq2SeqLM,
         AutoModelForSequenceClassification,
-        AutoModelForSpeechSeq2Seq,
         AutoModelForTableQuestionAnswering,
         AutoModelForTokenClassification)
 from transformers import TrainingArguments
@@ -28,7 +22,7 @@ SUPPORTED_TASKS = {
     """ 
     "feature-extraction": {
         "pt": (AutoModel,),
-        "default": {"model": {"pt": "distilbert-base-cased", "tf": "distilbert-base-cased"}},
+        "default": {"model": {"pt": "distilbert-base-cased"}},
     },
     "text-classification": {
         "pt": (AutoModelForSequenceClassification,),

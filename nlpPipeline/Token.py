@@ -15,27 +15,72 @@ from tokenizers import Tokenizer, models, normalizers, pre_tokenizers, decoders,
 from tokenizers.normalizers import Lowercase, NFC, NFD, NFKC, NFKD, Nmt, StripAccents
 from tokenizers.models import WordPiece, BPE, Unigram, WordLevel
 from tokenizers.pre_tokenizers import Whitespace, ByteLevel, BertPreTokenizer, CharDelimiterSplit
-from tokenizers.processors import BertProcessing, ByteLevel, RobertaProcessing
-from tokenizers.trainers import BpeTrainer, UnigramTrainer, WordLevelTrainer, WordLevelTrainer
+from tokenizers.processors import BertProcessing, ByteLevel, RobertaProcessing, TemplateProcessing
+from tokenizers.trainers import BpeTrainer, UnigramTrainer, WordPieceTrainer, WordLevelTrainer
 
 SUPPORTED_PRETOKENIZER = {"ByteLevel": ByteLevel,
                           "BertPreTokenizer": BertPreTokenizer,
                           "CharDelimiterSplit": CharDelimiterSplit,
                           "Whitespace": Whitespace}
-SUPPORTED_TOKENIZER = {"Unigram": Unigram,
-                       "WordPiece": WordPiece,
-                       "BPE": BPE,
-                       "WordLevel": WordLevel
-                       }
+
 SUPPORTED_POSTPROCESSOR = {"BertProcessing": BertProcessing,
                            "ByteLevel": ByteLevel,
-                          "RobertaProcessing": RobertaProcessing
+                          "RobertaProcessing": RobertaProcessing,
+                        "TemplateProcessing": TemplateProcessing
                            }
 SUPPORTED_TRAINERS = {"BpeTrainer": BpeTrainer,
                       "UnigramTrainer": UnigramTrainer,
                       "WordLevelTrainer": WordLevelTrainer,
-                      "WordPieceTrainer": WordLevelTrainer
+                      "WordPieceTrainer": WordPieceTrainer
                       }
+#Tokenizer model defaults from transformers model defaults
+SUPPORTED_TOKENIZER = {"Unigram": {"model": Unigram,
+                                   "default": {"token_param": {"vocab":None},
+                                       "Normalizer": [NFD(), Lowercase(), StripAccents()],
+                                                 "pre_tokenizer":  "Whitespace",
+                                                 "post": "BertProcessing",
+                                                 "trainer": "UnigramTrainer",
+                                                 "train_param": {"unk_token": "[UNK]",
+                                                                "special_tokens": ["[UNK]", "[CLS]", "[SEP]", "[PAD]", "[MASK]"]},
+                                                 "post_param": {"sep": ("[SEP]",2),"cls":("[CLS]",1)}
+                                                 }
+                                   },
+                       "WordPiece": {"model": WordPiece,
+                                     #default is for BERT
+                                     "default": {"token_param": {"unk_token": "[UNK]"},
+                                                 "Normalizer": [NFD(), Lowercase(), StripAccents()],
+                                                 "pre_tokenizer":  "Whitespace",
+                                                 "post": "BertProcessing",
+                                                 "trainer": "WordPieceTrainer",
+                                                 "train_param": {"vocab_size": 30522,
+                                                                "special_tokens": ["[UNK]", "[CLS]", "[SEP]", "[PAD]", "[MASK]"]},
+                                                 "post_param": {"sep": ("[SEP]",2),"cls":("[CLS]",1)}
+                                                 }
+                                   },
+                       "BPE": {"model": BPE,
+                               #default is for RoBERTa
+                              "default": {       "token_param": {"unk_token": "<unk>"},
+                                                 "Normalizer": [NFD(), Lowercase(), StripAccents()],
+                                                 "pre_tokenizer":  "Whitespace",
+                                                 "post": "RobertaProcessing",
+                                                 "trainer": "BpeTrainer",
+                                                 "train_param": {"vocab_size": 30522,
+                                                                "special_tokens": [ "<s>", "<pad>", "</s>","<unk>", "<mask>"]},
+                                                 "post_param": {"sep": ("[</s>]",2),"cls":("[<s>]",1)}
+                                                 }
+                                   },
+                       "WordLevel": {"model": WordLevel,
+                                     "default": {"token_param": {"unk_token": "[UNK]"},
+                                                 "Normalizer": [NFD(), Lowercase(), StripAccents()],
+                                                 "pre_tokenizer":  "Whitespace",
+                                                 "post": "BertProcessing",
+                                                 "trainer": "WordLevelTrainer",
+                                                 "train_param": {"special_tokens": ["[UNK]", "[CLS]", "[SEP]", "[PAD]", "[MASK]"]},
+                                                 "post_param": {"sep": ("[SEP]",2),"cls":("[CLS]",1)}
+                                                 }
+                                   }
+                       }
+
 #-------------------------------------------------------------------------------------------------------------------------
 
 def Init_norm(tokenizer, normalise_list):
@@ -61,8 +106,8 @@ def Init_norm(tokenizer, normalise_list):
 
     :return tokenizers.normalizers.Sequence object
     """
-
     tokenizer.normalizer = normalizers.Sequence(normalise_list)
+
     return tokenizer
 
 #-------------------------------------------------------------------------------------------------------------------------
@@ -106,16 +151,17 @@ def Init_token(token, **kwargs):
 
     tokenizer = None
     if token in SUPPORTED_TOKENIZER:
-        tokenizer = Tokenizer(SUPPORTED_TOKENIZER[token](**kwargs))
+        tokenizer = Tokenizer(SUPPORTED_TOKENIZER[token]["model"](**kwargs))
     else:
         print("not supported")
     return(tokenizer)
 
 #-------------------------------------------------------------------------------------------------------------------------
 
-def Init_post_token(tokenizer, **kwargs):
-    tokenizer.post_processor = TemplateProcessing(**kwargs
-    )
+def Init_post_token(tokenizer,post, **kwargs):
+
+    tokenizer.post_processor = SUPPORTED_POSTPROCESSOR[post](**kwargs)
+    return (tokenizer)
 
         # single="[CLS] $A [SEP]",
         # pair="[CLS] $A [SEP] $B:1 [SEP]:1",
@@ -155,29 +201,46 @@ def token_nlpipe(
         tokenizer,
         trainer = None,
         pre_tokenizer = None,
-        post_tokenizer = None,
+        post = None,
         Normalizer = None,
         save = False,
         path = None,
         token_param = None,
         train_param = None,
         post_param = None,
+        default = False,
+        file_name = "trained_tokenizer",
+        add_post = False
 ):
     """
     Wrapper function for training tokenization with tokenizers package
     See official documentation on:
     https://huggingface.co/docs/tokenizers/python/latest/
     """
+
     files = file_path
     cpath = os.getcwd()
+
+    if default == True:
+        default = SUPPORTED_TOKENIZER[tokenizer]["default"]
+        token_param = default["token_param"]
+        trainer = default["trainer"]
+        pre_tokenizer = default["pre_tokenizer"]
+        Normalizer = default["Normalizer"]
+        train_param = default["train_param"]
+        if add_post == True:
+            post_param = default["post_param"]
+            post = default["post"]
+
 
     tnz = Init_token(tokenizer, **token_param)
     if Normalizer is not None:
         tnz = Init_norm(tnz, Normalizer)
     if pre_tokenizer is not None:
         tnz = Init_pre_token(tnz, pre_tokenizer)
-    if post_tokenizer is not None:
-        tnz = Init_post_token(tnz, **post_param)
+
+    if add_post is not False:
+        tnz = Init_post_token(tnz,post, **post_param)
 
     train = Init_trainer(trainer,**train_param)
 
@@ -186,53 +249,52 @@ def token_nlpipe(
     if save is True:
         if path is None:
             cpath = cpath.replace(os.sep, '/')
-            tnz.save(cpath + "/trained_tokenizer.json")
-            tokenizer = Tokenizer.from_file(cpath + "/trained_tokenizer.json")
+            tnz.save(cpath + "/" + file_name + ".json")
+            tokenizer = Tokenizer.from_file(cpath + "/" + file_name + ".json")
         else:
-            tnz.save(path + "/trained_tokenizer.json")
-            tokenizer = Tokenizer.from_file(path + "/trained_tokenizer.json")
+            tnz.save(path +  "/" + file_name + ".json")
+            tokenizer = Tokenizer.from_file(path +  "/" + file_name + ".json")
     return tokenizer
 
 
 # -------------------------------------------------------------------------------------------------------------------------
 
-
-
-#TESTING
-# tokenizer = Init_token("BPE",unk_token = "[UNK]")
-# tokenizer = Init_norm(tokenizer, [Lowercase()])
-# tokenizer = Init_pre_token(tokenizer, "Whitespace")
-# train = Init_trainer("BpeTrainer",special_tokens=["[UNK]", "[CLS]", "[SEP]", "[PAD]", "[MASK]"])
-# path = "C:/Users/thean/Documents/tests/wikitext-103-raw/wiki.test.raw"
-# files = [path]
-# tokenizer.train(files, train)
-# #tokenizer.train_from_iterator(files, train)
-# tokenizer.save("C:/Users/thean/Documents/tests/wikitext-103-raw/tokenizer-wiki.json")
-#
-# tokenizer = Tokenizer.from_file("C:/Users/thean/Documents/tests/wikitext-103-raw/tokenizer-wiki.json")
-# output = tokenizer.encode("Simple is How are you 😁 ?")
-# print(output.tokens)
 #[f"C:/Users/thean/Documents/tests/wikitext-103-raw/wiki.{split}.raw" for split in ["test", "train", "valid"]]
 #"C:/Users/thean/Documents/tests/wikitext-103-raw/wiki.test.raw"
 
-load_dataset
 
 token_nlpipe(file_path = ["C:/Users/thean/Documents/tests/wikitext-103-raw/wiki.test.raw"],
-             tokenizer = "BPE",
-             trainer = "BpeTrainer",
+             tokenizer = "WordPiece",
+             trainer = "WordPieceTrainer",
              pre_tokenizer = "Whitespace",
              Normalizer = [NFD(), Lowercase(), StripAccents()],
              save = True,
+             post = "TemplateProcessing",
              path = "C:/Users/thean/Documents/tests/wikitext-103-raw/",
              token_param = {"unk_token": "[UNK]"},
              train_param = {"vocab_size": 30522,
                             "special_tokens": ["[UNK]", "[CLS]", "[SEP]", "[PAD]", "[MASK]"]},
-             post_param = {"single":["[CLS] $A [SEP]"],
-                           "pair": ["[CLS] $A [SEP] $B:1 [SEP]:1"],
+             post_param = {"single": "[CLS] $A [SEP]",
+                           "pair": "[CLS] $A [SEP] $B:1 [SEP]:1",
                            "special_tokens": [("[CLS]", 1),("[SEP]", 2),]
-                           }
+                           },
+             add_post = True
 )
 
-#tokenizer = Tokenizer.from_file("C:/Users/thean/Documents/tests/wikitext-103-raw/trained_tokenizer.json")
-#output = tokenizer.encode("Simple is How are you 😁 ?")
-#print(output.tokens)
+token_nlpipe(file_path = ["C:/Users/thean/Documents/tests/wikitext-103-raw/wiki.test.raw"],
+             tokenizer = "WordPiece",
+             default = True,
+             save = True,
+             path = "C:/Users/thean/Documents/tests/wikitext-103-raw/",
+             file_name = "test_tokenizer",
+             add_post = True
+
+
+             )
+
+tokenizer1 = Tokenizer.from_file("C:/Users/thean/Documents/tests/wikitext-103-raw/trained_tokenizer.json")
+tokenizer2 = Tokenizer.from_file("C:/Users/thean/Documents/tests/wikitext-103-raw/test_tokenizer.json")
+output = tokenizer1.encode("Simple is How are you 😁 ?")
+print(output.tokens)#
+output = tokenizer2.encode("Simple is How are you 😁 ?")
+print(output.tokens)
