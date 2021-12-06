@@ -223,14 +223,28 @@ def token_nlpipe(
 
     if default == True:
         default = SUPPORTED_TOKENIZER[tokenizer]["default"]
-        token_param = default["token_param"]
-        trainer = default["trainer"]
-        pre_tokenizer = default["pre_tokenizer"]
-        Normalizer = default["Normalizer"]
-        train_param = default["train_param"]
-        if add_post == True:
-            post_param = default["post_param"]
-            post = default["post"]
+
+        if "token_param" in default.keys():
+            if token_param is None:
+                token_param = default["token_param"]
+        if "trainer" in default.keys():
+            if trainer is None:
+                trainer = default["trainer"]
+        if "pre_tokenizer" in default.keys():
+            if pre_tokenizer is None:
+                pre_tokenizer = default["pre_tokenizer"]
+        if "Normalizer" in default.keys():
+            if Normalizer is None:
+                Normalizer = default["Normalizer"]
+        if "train_param" in default.keys():
+            if train_param is None:
+                train_param = default["train_param"]
+        if "post_param" in default.keys():
+            if post_param is None:
+                post_param = default["post_param"]
+        if "post" in default.keys():
+            if post is None:
+                post = default["post"]
 
 
     tnz = Init_token(tokenizer, **token_param)
@@ -239,7 +253,7 @@ def token_nlpipe(
     if pre_tokenizer is not None:
         tnz = Init_pre_token(tnz, pre_tokenizer)
 
-    if add_post is not False:
+    if post is not None:
         tnz = Init_post_token(tnz,post, **post_param)
 
     train = Init_trainer(trainer,**train_param)
@@ -278,7 +292,6 @@ token_nlpipe(file_path = ["C:/Users/thean/Documents/tests/wikitext-103-raw/wiki.
                            "pair": "[CLS] $A [SEP] $B:1 [SEP]:1",
                            "special_tokens": [("[CLS]", 1),("[SEP]", 2),]
                            },
-             add_post = True
 )
 
 token_nlpipe(file_path = ["C:/Users/thean/Documents/tests/wikitext-103-raw/wiki.test.raw"],
@@ -286,10 +299,7 @@ token_nlpipe(file_path = ["C:/Users/thean/Documents/tests/wikitext-103-raw/wiki.
              default = True,
              save = True,
              path = "C:/Users/thean/Documents/tests/wikitext-103-raw/",
-             file_name = "test_tokenizer",
-             add_post = True
-
-
+             file_name = "test_tokenizer"
              )
 
 tokenizer1 = Tokenizer.from_file("C:/Users/thean/Documents/tests/wikitext-103-raw/trained_tokenizer.json")

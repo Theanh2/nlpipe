@@ -4,10 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b395a52a-8802-4335-b6f1-681972b90be0" name="Changes" comment="05.12.2021 cleanup, adding functionalities">
+    <list default="true" id="b395a52a-8802-4335-b6f1-681972b90be0" name="Changes" comment="06.12.2021 nlpipe done, tokenization pipeline done (eventuelly rewriting to class), fine tuning transformer in work">
+      <change afterPath="$PROJECT_DIR$/nlpPipeline/README.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/nlpPipeline/Token.py" beforeDir="false" afterPath="$PROJECT_DIR$/nlpPipeline/Token.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/nlpPipeline/finetune.py" beforeDir="false" afterPath="$PROJECT_DIR$/nlpPipeline/finetune.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/nlpPipeline/nlpipe.py" beforeDir="false" afterPath="$PROJECT_DIR$/nlpPipeline/nlpipe.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -55,7 +55,7 @@
     <property name="last_opened_file_path" value="$USER_HOME$" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
-  <component name="RunManager" selected="Python.nlpipe (1)">
+  <component name="RunManager" selected="Python.Token">
     <configuration name="Token" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="Bachelor" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -192,8 +192,8 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.nlpipe (1)" />
         <item itemvalue="Python.Token" />
+        <item itemvalue="Python.nlpipe (1)" />
         <item itemvalue="Python.finetune (1)" />
         <item itemvalue="Python.scikit" />
         <item itemvalue="Python.nlpipe" />
@@ -265,7 +265,14 @@
       <option name="project" value="LOCAL" />
       <updated>1638734522050</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="06.12.2021 nlpipe done, tokenization pipeline done (eventuelly rewriting to class), fine tuning transformer in work">
+      <created>1638794241171</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1638794241171</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -300,10 +307,18 @@
     <MESSAGE value="03.12. nlpipe halfway running, models missing" />
     <MESSAGE value="04.12. (01:21) nlpipe 3/4 running" />
     <MESSAGE value="05.12.2021 cleanup, adding functionalities" />
-    <option name="LAST_COMMIT_MESSAGE" value="05.12.2021 cleanup, adding functionalities" />
+    <MESSAGE value="06.12.2021 nlpipe done, tokenization pipeline done (eventuelly rewriting to class), fine tuning transformer in work" />
+    <option name="LAST_COMMIT_MESSAGE" value="06.12.2021 nlpipe done, tokenization pipeline done (eventuelly rewriting to class), fine tuning transformer in work" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/nlpPipeline/Token.py</url>
+          <line>279</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
       <default-breakpoints>
         <breakpoint type="python-exception">
           <properties notifyOnTerminate="true" exception="BaseException">

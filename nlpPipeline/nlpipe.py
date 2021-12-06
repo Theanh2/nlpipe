@@ -265,7 +265,8 @@ class nlpipe:
         self.extracted = self.extractor.fit_transform(self.data[column])
         return self.extracted
 
-
+# -------------------------------------------------------------------------------------------------------------------------
+#Transformer load from pretrained, return features, use pipeline function for task
     def set_tokenizer(self,Transformer = None, from_file = None):
         """
         Set Tokenizer from file (tokenizers package) or uses Autotokenizer with a model from https://huggingface.co/models
@@ -278,6 +279,10 @@ class nlpipe:
         if Transformer is not None:
             self.tokenizer = AutoTokenizer.from_pretrained(Transformer)
 
+    def test(self, task, model, text, **kwargs):
+        task = pipeline(task =task, model = model, **kwargs)
+        task(text)
+
 param_grid = {'kernel': ('linear', 'rbf'),
               'C': [1, 10, 100]}
 
@@ -285,12 +290,8 @@ x = nlpipe()
 x.load_data('glue', 'mrpc', split='train')
 x.split_data(test_size = 0.3, seed = 1221, shuffle = False)
 #x.logistic('sentence1', 'label', 'BOW')
-# x.NaiveB('sentence1', 'label', 'TFIDF')
-# x.Randomforest('sentence1', 'label', 'BOW', n_estimators = 1000)
-# x.linearSVM('sentence1', 'label', 'BOW',loss='log')
-#x.cv('sentence1', 'label', 'BOW',"SVM",shuffle = True, cv = 3)
+#x.NaiveB('sentence1', 'label', 'TFIDF')
+#x.Randomforest('sentence1', 'label', 'BOW', n_estimators = 1000)
+#x.linearSVM('sentence1', 'label', 'BOW',loss='log')
+#x.cv('sentence1', 'label', 'BOW',"SVM",shuffle = True, cv = 5)
 x.gridsearch('sentence1', 'label', 'BOW',"SVM",param_grid, cv = 2 )
-
-
-#tokenizer = Tokenizer.from_file("C:/Users/thean/Documents/tests/wikitext-103-raw/trained_tokenizer.json")
-
