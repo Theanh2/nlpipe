@@ -20,15 +20,12 @@ PROGRAMMING A PIPELINE FOR NATURAL LANGUAGE PROCESSING
 - Why did you undertake it?
 
 ## Features
-List the ready features here:
 - tokenization Pipeline
 - Model Pipeline
 - Fine-tuning Pipeline
 
 ## Setup
-What are the project requirements/dependencies? Where are they listed? A requirements.txt or a Pipfile.lock file perhaps? Where is it located?
-
-Proceed to describe how to install / setup one's local environment / get started with the project.
+requirements.txt
 
 ## Usage
 How does one go about using it?
@@ -46,5 +43,6 @@ Provide various use cases and code examples here.
 - Many thanks to my supervisors: Prof. Dr. Christian Heumann, Dr. Matthias Aßenmacher
 
 ## Contact
-Created by [@Theanh2], feel free to give me any tips for improvement!
+Created by The Anh Vu, feel free to give me any tips for improvement!
+Theanh_v99@yahoo.de
 
