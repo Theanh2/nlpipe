@@ -4,7 +4,7 @@ PROGRAMMING A PIPELINE FOR NATURAL LANGUAGE PROCESSING
 
 ## Table of Contents
 * [General Info](#general-information)
-* [Main libraries](#Main libraries)
+* [Main libraries](#Main-libraries)
 * [Usage](#usage)
 * [Room for Improvement](#room-for-improvement)
 * [Contact](#contact)
