@@ -4,10 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b395a52a-8802-4335-b6f1-681972b90be0" name="Changes" comment="07.12.2021 tokenization Pipeline encoding, few changes">
+    <list default="true" id="b395a52a-8802-4335-b6f1-681972b90be0" name="Changes" comment="08.12.2021 token_nlpipe and nlpipe done">
+      <change afterPath="$PROJECT_DIR$/nlpipe/fine_nlpipe.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/nlpipe/nlpipe.py" beforeDir="false" afterPath="$PROJECT_DIR$/nlpipe/nlpipe.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/nlpipe/token_nlpipe.py" beforeDir="false" afterPath="$PROJECT_DIR$/nlpipe/token_nlpipe.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/nlpipe/finetune.py" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -59,8 +60,8 @@
       <recent name="C:\Users\thean\PycharmProjects\Bachelor" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.token_nlpipe (1)">
-    <configuration name="finetune (1)" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+  <component name="RunManager" selected="Python.fine_nlpipe">
+    <configuration name="fine_nlpipe" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="nlpipe" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -68,11 +69,11 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/nlpPipeline" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/nlpipe" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/nlpPipeline/finetune.py" />
+      <option name="SCRIPT_NAME" value="C:\Users\thean\PycharmProjects\Bachelor\nlpipe\fine_nlpipe.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -189,18 +190,18 @@
     <list>
       <item itemvalue="Python.main" />
       <item itemvalue="Python.nlpipe (1)" />
-      <item itemvalue="Python.finetune (1)" />
       <item itemvalue="Python.token_nlpipe" />
       <item itemvalue="Python.nlpipe (2)" />
       <item itemvalue="Python.token_nlpipe (1)" />
+      <item itemvalue="Python.fine_nlpipe" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.fine_nlpipe" />
         <item itemvalue="Python.token_nlpipe (1)" />
         <item itemvalue="Python.nlpipe (2)" />
         <item itemvalue="Python.token_nlpipe" />
         <item itemvalue="Python.nlpipe (1)" />
-        <item itemvalue="Python.finetune (1)" />
       </list>
     </recent_temporary>
   </component>
@@ -297,7 +298,14 @@
       <option name="project" value="LOCAL" />
       <updated>1638844860220</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="08.12.2021 token_nlpipe and nlpipe done">
+      <created>1638926707869</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1638926707869</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -335,7 +343,8 @@
     <MESSAGE value="06.12.2021 nlpipe done, tokenization pipeline done (eventuelly rewriting to class), fine tuning transformer in work" />
     <MESSAGE value="06.12.2021 tokenization Pipeline if clauses for defaults, readme file" />
     <MESSAGE value="07.12.2021 tokenization Pipeline encoding, few changes" />
-    <option name="LAST_COMMIT_MESSAGE" value="07.12.2021 tokenization Pipeline encoding, few changes" />
+    <MESSAGE value="08.12.2021 token_nlpipe and nlpipe done" />
+    <option name="LAST_COMMIT_MESSAGE" value="08.12.2021 token_nlpipe and nlpipe done" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

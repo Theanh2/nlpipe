@@ -1,48 +1,38 @@
 PROGRAMMING A PIPELINE FOR NATURAL LANGUAGE PROCESSING
-> As part of my bachelor thesis, I program multiple Pipelines for the use in natural language processing.
+> As part of my bachelor's thesis, I program multiple Pipelines for the use in natural language processing.
 > The main focus is user friendly code that can be run with even without deep knowledge about language processing, while maintaining the modularity to change hyper/parameter and techniques as you like.
 
 ## Table of Contents
 * [General Info](#general-information)
-* [Features](#features)
-* [Setup](#setup)
+* [Main libraries](#Main libraries)
 * [Usage](#usage)
 * [Room for Improvement](#room-for-improvement)
-* [Acknowledgements](#acknowledgements)
 * [Contact](#contact)
-<!-- * [License](#license) -->
-
 
 ## General Information
-- Provide general information about your project here.
-- What problem does it (intend to) solve?
-- What is the purpose of your project?
-- Why did you undertake it?
+These Pipelines are written as part of my bachelor's thesis and supervised by Prof. Dr. Christian Heumann and Dr. Matthias Aßenmacher
+The goal of the pipelines is to simplify the use of natural language processing techniques. There exist a wide array of good packages but there is not a unified API for all of them.
+These Pipelines wrap a lot of them together, so that it is more manageable and add a few more functionalities and quality of life features to the wrapped functions.
+Especially for beginners it can be easier to set up the virtual environment with a requirement file and a flowchart-like workflow.
 
-## Features
-- tokenization Pipeline
-- Model Pipeline
-- Fine-tuning Pipeline
-
-## Setup
-requirements.txt
+## Main libraries
+- Transformer
+- Scikit-learn
+- datasets
+- tokenizers
 
 ## Usage
-How does one go about using it?
-Provide various use cases and code examples here.
-
-`write-your-code-here`
+For more information about the Pipelines you can read my bachelor's thesis.
+Code examples and documentation for each function is provided in the appendix.
 
 ## Room for Improvement
-- Improvement to be done 1
-- Improvement to be done 2
-
-## Acknowledgements
-
-- This project was part of my bachelor thesis: Programming a pipeline for natural language processing
-- Many thanks to my supervisors: Prof. Dr. Christian Heumann, Dr. Matthias Aßenmacher
+- databank of raw text for tokenization training
+- More supported models for nlpipe
+- Visualizations of tuning
 
 ## Contact
+Many thanks to my supervisors: Prof. Dr. Christian Heumann, Dr. Matthias Aßenmacher
+
 Created by The Anh Vu, feel free to give me any tips for improvement!
 Theanh_v99@yahoo.de
 
