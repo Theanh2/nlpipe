@@ -10,7 +10,7 @@ test_list = [
 
 
 
-
+import torch
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.linear_model import SGDClassifier, LogisticRegression
@@ -24,6 +24,11 @@ from tokenizers import Tokenizer
 from nltk.tokenize import word_tokenize
 from nltk import PorterStemmer, LancasterStemmer, Cistem, RSLPStemmer, SnowballStemmer, WordNetLemmatizer
 import pandas as pd
+from transformers import pipeline
+from transformers.pipelines.base import KeyDataset
+import tqdm
+import json
+import os
 
 SUPPORTED_STEMMER = {
         "Cistem": Cistem,
@@ -90,6 +95,7 @@ def processing(example, column,stoplist = None, stemmer = None, lemmatizer = Non
 
 class nlpipe:
     grid = None
+    param_grid = None
     Naiveclassifier = None
     Logisticclassifier = None
     SVMclassifier = None
@@ -125,13 +131,13 @@ class nlpipe:
         self.data = self.data.map(lambda examples: self.tokenizer(examples[column]),
                                   batched=batched)
 
-    def run_processing(self, column,stoplist = None, stemmer = None, lemmatizer = None):
+    def run_processing(self, column,stoplist = None, stemmer = None, lemmatizer = None, languageSnowball = 'english'):
         self.data = self.data.map(lambda example: processing(example,
                                                              column = column,
                                                              stoplist = stoplist,
                                                              stemmer = stemmer,
                                                              lemmatizer = lemmatizer,
-                                                             languageSnowball = 'english'
+                                                             languageSnowball = languageSnowball
                                                             )
         )
 
@@ -177,17 +183,24 @@ class nlpipe:
         print("confusion matrix (SVM):")
         print(metrics.confusion_matrix(self.test_data[target_column], predicted))
 
-    def gridsearch(self, feature_column, target_column,extractor,model, grid, cv = 5, n_jobs = 1, refit = True, scoring = None, **kwargs):
+    def gridsearch(self, feature_column, target_column,extractor,model, param_grid = None, cv = 5, n_jobs = 1, refit = True, scoring = None, **kwargs):
+        if param_grid is None:
+            param_grid = self.param_grid
 
         self.extractor = SUPPORTED_VECTORIZER[extractor]()
 
         vec = self.extractor.fit_transform(self.data[feature_column])
         model = SUPPORTED_MODELS[model](**kwargs)
-        gs = GridSearchCV(model,grid,cv = cv, n_jobs = n_jobs, refit = refit, scoring = scoring).fit(vec, self.data[target_column])
+        gs = GridSearchCV(model,param_grid,cv = cv, n_jobs = n_jobs, refit = refit, scoring = scoring).fit(vec, self.data[target_column])
         self.grid = pd.DataFrame(gs.cv_results_)
+        print("Parameter Grid:")
+        print(param_grid)
         print("Best Parameter in search: (best to worst rank)")
         print(self.grid.sort_values("rank_test_score", ascending = True)["params"])
         return self.grid
+
+    def set_grid(self, param_grid):
+        self.param_grid = param_grid
 
     def cv(self, feature_column, target_column,extractor,model, shuffle = False, cv = 5, test_size=0.3, random_state=0, **kwargs):
 
@@ -279,19 +292,59 @@ class nlpipe:
         if Transformer is not None:
             self.tokenizer = AutoTokenizer.from_pretrained(Transformer)
 
-    def test(self, task, model, text, **kwargs):
-        task = pipeline(task =task, model = model, **kwargs)
-        task(text)
 
-param_grid = {'kernel': ('linear', 'rbf'),
-              'C': [1, 10, 100]}
+    def transformer_nlpipe(self,data,task = None,model = None,print = False, save = False, path = None, tokenizer = None,
+                           feature_extractor = None,config = None,framework = None,revision = "main", use_fast = True, use_auth_token = None, *args ,**kwargs):
+        """
+        decorator for transformer.pipeline
+        """
 
-x = nlpipe()
-x.load_data('glue', 'mrpc', split='train')
-x.split_data(test_size = 0.3, seed = 1221, shuffle = False)
+        tempdict = []
+        if __name__ == '__main__':
+            pipe = pipeline(task = task,
+                            model = model,
+                            tokenizer = tokenizer,
+                            feature_extractor = feature_extractor,
+                            config = config,
+                            framework = framework,
+                            revision = revision,
+                            use_fast = use_fast,
+                            use_auth_token = use_auth_token
+                            )
+
+            for out in tqdm.tqdm(pipe(KeyDataset(data, "text"),*args, **kwargs), total=len(data)):
+                if print is True:
+                    print(out)
+                if save is True:
+                    tempdict.append(out)
+
+            if save is True:
+                file = path
+                assert os.path.isfile(file)
+                with open(file, 'w') as f:
+                    json.dump(tempdict, f)
+        return tempdict
+
+
+
+param_grid = {'kernel': ('linear', 'rbf'),'C': [1, 10, 100]}
+
+
+#x.nlpipe()
+#x.load_data('glue', 'mrpc', split='train')
+#x.split_data(test_size = 0.3, seed = 1221, shuffle = False)
+#x.transformer_nlpipe(x.data,task = "text-classification", device=0)
+#x.set_grid({'kernel': ('linear', 'rbf'), 'C': [1, 10, 100]})
 #x.logistic('sentence1', 'label', 'BOW')
 #x.NaiveB('sentence1', 'label', 'TFIDF')
 #x.Randomforest('sentence1', 'label', 'BOW', n_estimators = 1000)
 #x.linearSVM('sentence1', 'label', 'BOW',loss='log')
-#x.cv('sentence1', 'label', 'BOW',"SVM",shuffle = True, cv = 5)
-x.gridsearch('sentence1', 'label', 'BOW',"SVM",param_grid, cv = 2 )
+#print(x.cv('sentence1', 'label', 'BOW',"SVM",shuffle = True, cv = 5))
+#x.gridsearch('sentence1', 'label', 'BOW',"SVM",param_grid, cv = 2 )
+
+
+y = nlpipe()
+y.load_data("imdb", name="plain_text", split="unsupervised")
+y.split_data(test_size = 0.001)
+y.transformer_nlpipe(y.test_data,save = True, path = "C:/Users/thean/Documents/tests/wikitext-103-raw/test.txt" ,task = "text-classification", truncation = "only_first")
+
