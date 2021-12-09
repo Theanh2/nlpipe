@@ -4,11 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b395a52a-8802-4335-b6f1-681972b90be0" name="Changes" comment="08.12.2021 token_nlpipe and nlpipe done">
-      <change afterPath="$PROJECT_DIR$/nlpipe/fine_nlpipe.py" afterDir="false" />
+    <list default="true" id="b395a52a-8802-4335-b6f1-681972b90be0" name="Changes" comment="08.12.2021 All done re-reading for final commit">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/nlpipe/finetune.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/nlpipe/fine_nlpipe.py" beforeDir="false" afterPath="$PROJECT_DIR$/nlpipe/fine_nlpipe.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/nlpipe/nlpipe.py" beforeDir="false" afterPath="$PROJECT_DIR$/nlpipe/nlpipe.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/nlpipe/token_nlpipe.py" beforeDir="false" afterPath="$PROJECT_DIR$/nlpipe/token_nlpipe.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -60,7 +60,7 @@
       <recent name="C:\Users\thean\PycharmProjects\Bachelor" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.fine_nlpipe">
+  <component name="RunManager" selected="Python.nlpipe (2)">
     <configuration name="fine_nlpipe" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="nlpipe" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -197,9 +197,9 @@
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.nlpipe (2)" />
         <item itemvalue="Python.fine_nlpipe" />
         <item itemvalue="Python.token_nlpipe (1)" />
-        <item itemvalue="Python.nlpipe (2)" />
         <item itemvalue="Python.token_nlpipe" />
         <item itemvalue="Python.nlpipe (1)" />
       </list>
@@ -305,7 +305,21 @@
       <option name="project" value="LOCAL" />
       <updated>1638926707869</updated>
     </task>
-    <option name="localTasksCounter" value="14" />
+    <task id="LOCAL-00014" summary="08.12.2021 All done re-reading for final commit">
+      <created>1638979915495</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1638979915495</updated>
+    </task>
+    <task id="LOCAL-00015" summary="08.12.2021 All done re-reading for final commit">
+      <created>1638980001970</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1638980001970</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -344,7 +358,8 @@
     <MESSAGE value="06.12.2021 tokenization Pipeline if clauses for defaults, readme file" />
     <MESSAGE value="07.12.2021 tokenization Pipeline encoding, few changes" />
     <MESSAGE value="08.12.2021 token_nlpipe and nlpipe done" />
-    <option name="LAST_COMMIT_MESSAGE" value="08.12.2021 token_nlpipe and nlpipe done" />
+    <MESSAGE value="08.12.2021 All done re-reading for final commit" />
+    <option name="LAST_COMMIT_MESSAGE" value="08.12.2021 All done re-reading for final commit" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

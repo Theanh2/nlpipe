@@ -31,12 +31,9 @@ def check(task):
         task_options = task["default"]
     return task
 
-metric = load_metric("accuracy")
 
-def compute_metrics(eval_pred):
-    logits, labels = eval_pred
-    predictions = np.argmax(logits, axis=-1)
-    return metric.compute(predictions=predictions, references=labels)
+
+
 
 class fine_nlpipe:
 
@@ -57,7 +54,7 @@ class fine_nlpipe:
         """
         self.data = load_dataset(*args, **kwargs)
 
-    def split_data(self,train_size = 1, test_size = 1, seed = 1 , **kwargs):
+    def split_data(self,train_size = 1, test_size = 1, seed = 1234 , **kwargs):
         """
         Splits a dataset object with loading script into train and test split
         """
@@ -86,6 +83,7 @@ class fine_nlpipe:
             self.tokenizer = AutoTokenizer.from_pretrained(Transformer)
 
     def run_token(self,column,batched = True, **kwargs):
+        print("Mapping batches:")
         self.data = self.data.map(lambda examples: self.tokenizer(examples[column], **kwargs), batched = batched)
 
     def set_model(self, task, model, **kwargs):
@@ -94,7 +92,15 @@ class fine_nlpipe:
     def set_training_args(self,*args, **kwargs):
         self.training_args = TrainingArguments(*args, **kwargs)
 
-    def start_tuning(self,train_dataset = None,eval_dataset = None, save = False,path = None, **kwargs):
+    def compute_metrics(self,eval_pred):
+        logits, labels = eval_pred
+        predictions = np.argmax(logits, axis=-1)
+        return self.metric.compute(predictions=predictions, references=labels)
+
+    def set_metric(self,*args ,**kwargs):
+        self.metric = load_metric(*args, **kwargs)
+    
+    def start_tuning(self,train_dataset = None,eval_dataset = None,save_path = None, **kwargs):
         if train_dataset is None:
             train_dataset = self.train_data
         if eval_dataset is None:
@@ -108,22 +114,21 @@ class fine_nlpipe:
             **kwargs
         )
         self.trainer.evaluate()
-        if save is True:
-            self.trainer.save_model(path)
+        if save_path is not None:
+            self.trainer.save_model(save_path)
 
 
 
 # -------------------------------------------------------------------------------------------------------------------------
+#CODE EXAMPLE
+# pipe = fine_nlpipe()
+# pipe.set_metric("glue", "mrpc")
+# pipe.load_data("imdb")
+# pipe.set_tokenizer(Transformer = 'bert-base-cased')
+# pipe.run_token("text", padding = "max_length", truncation = True)
+# pipe.split_data(seed = 42, train_size= 0.001, test_size= 0.001 )
+# pipe.set_model("AutoModelForSequenceClassification", "bert-base-cased", num_labels = 2)
+# pipe.set_training_args("test_trainer", evaluation_strategy="epoch")
+# pipe.start_tuning(save_path = "C:/", compute_metrics = pipe.compute_metrics)
 
-pipe = fine_nlpipe()
-pipe.load_data("imdb")
-pipe.set_tokenizer(Transformer = 'bert-base-cased')
-pipe.split_data(seed = 42, train_size= 1, test_size= 1 )
-pipe.run_token("text", padding = "max_length", truncation = True)
-pipe.set_model("AutoModelForSequenceClassification", "bert-base-cased", num_labels = 2)
-pipe.set_training_args("test_trainer", evaluation_strategy="epoch")
-pipe.start_tuning(save = True, path = "C:/.../", compute_metrics = compute_metrics)
-# x.run_token("text", padding="max_length", truncation=True)
-# x.split_data()
-# x.set_model()
 

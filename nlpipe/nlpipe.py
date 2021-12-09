@@ -325,26 +325,23 @@ class nlpipe:
                     json.dump(tempdict, f)
         return tempdict
 
+# -------------------------------------------------------------------------------------------------------------------------
+#CODE EXAMPLE
 
-
-param_grid = {'kernel': ('linear', 'rbf'),'C': [1, 10, 100]}
-
-
-#x.nlpipe()
+#x = nlpipe()
 #x.load_data('glue', 'mrpc', split='train')
 #x.split_data(test_size = 0.3, seed = 1221, shuffle = False)
-#x.transformer_nlpipe(x.data,task = "text-classification", device=0)
 #x.set_grid({'kernel': ('linear', 'rbf'), 'C': [1, 10, 100]})
 #x.logistic('sentence1', 'label', 'BOW')
 #x.NaiveB('sentence1', 'label', 'TFIDF')
 #x.Randomforest('sentence1', 'label', 'BOW', n_estimators = 1000)
 #x.linearSVM('sentence1', 'label', 'BOW',loss='log')
 #print(x.cv('sentence1', 'label', 'BOW',"SVM",shuffle = True, cv = 5))
-#x.gridsearch('sentence1', 'label', 'BOW',"SVM",param_grid, cv = 2 )
+#x.gridsearch('sentence1', 'label', 'BOW',"SVM", cv = 5 )
 
 
-y = nlpipe()
-y.load_data("imdb", name="plain_text", split="unsupervised")
-y.split_data(test_size = 0.001)
-y.transformer_nlpipe(y.test_data,save = True, path = "C:/Users/thean/Documents/tests/wikitext-103-raw/test.txt" ,task = "text-classification", truncation = "only_first")
+# y = nlpipe()
+# y.load_data("imdb", name="plain_text", split="unsupervised")
+# y.split_data(test_size = 0.001)
+# y.transformer_nlpipe(y.test_data,save = False ,task = "text-classification", truncation = "only_first")
 

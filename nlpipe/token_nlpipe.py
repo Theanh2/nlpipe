@@ -203,7 +203,6 @@ def token_nlpipe(
         pre_tokenizer = None,
         post = None,
         Normalizer = None,
-        save = False,
         path = None,
         token_param = None,
         train_param = None,
@@ -284,46 +283,39 @@ def encoding_batch(data, tokenizer_path = None, padding = False,pad_id =3, pad_t
 
     return(output)
 # -------------------------------------------------------------------------------------------------------------------------
+#CODE EXAMPLE
+# token_nlpipe(file_path = ["/wikitext-103-raw/wiki.test.raw"],
+#              tokenizer = "WordPiece",
+#              trainer = "WordPieceTrainer",
+#              pre_tokenizer = "Whitespace",
+#              Normalizer = [NFD(), Lowercase(), StripAccents()],
+#              post = "TemplateProcessing",
+#              path = "/wikitext-103-raw/",
+#              token_param = {"unk_token": "[UNK]"},
+#              train_param = {"vocab_size": 30522,
+#                             "special_tokens": ["[UNK]", "[CLS]", "[SEP]", "[PAD]", "[MASK]"]},
+#              post_param = {"single": "[CLS] $A [SEP]",
+#                            "pair": "[CLS] $A [SEP] $B:1 [SEP]:1",
+#                            "special_tokens": [("[CLS]", 1),("[SEP]", 2),]
+#                            },
+#              file_name= "BERT_tokenizer"
+# )
 
-#[f"C:/Users/thean/Documents/tests/wikitext-103-raw/wiki.{split}.raw" for split in ["test", "train", "valid"]]
-#"C:/Users/thean/Documents/tests/wikitext-103-raw/wiki.test.raw"
-
-
-token_nlpipe(file_path = ["C:/Users/thean/Documents/tests/wikitext-103-raw/wiki.test.raw"],
-             tokenizer = "WordPiece",
-             trainer = "WordPieceTrainer",
-             pre_tokenizer = "Whitespace",
-             Normalizer = [NFD(), Lowercase(), StripAccents()],
-             post = "TemplateProcessing",
-             path = "C:/Users/thean/Documents/tests/wikitext-103-raw/",
-             token_param = {"unk_token": "[UNK]"},
-             train_param = {"vocab_size": 30522,
-                            "special_tokens": ["[UNK]", "[CLS]", "[SEP]", "[PAD]", "[MASK]"]},
-             post_param = {"single": "[CLS] $A [SEP]",
-                           "pair": "[CLS] $A [SEP] $B:1 [SEP]:1",
-                           "special_tokens": [("[CLS]", 1),("[SEP]", 2),]
-                           },
-             file_name= "BERT_tokenizer"
-)
-encoding_batch(data = [["Hello, y'all!", "How are you doing?"]],
-               tokenizer_path = "C:/Users/thean/Documents/tests/wikitext-103-raw/BERT_tokenizer.json",
-                out = True,
-                padding = True
-               )
-
-
-#
-# token_nlpipe(file_path = ["C:/Users/thean/Documents/tests/wikitext-103-raw/wiki.test.raw"],
+# token_nlpipe(file_path = ["/wikitext-103-raw/wiki.test.raw"],
 #              tokenizer = "WordPiece",
 #              default = True,
-#              path = "C:/Users/thean/Documents/tests/wikitext-103-raw/",
+#              path = "/wikitext-103-raw/",
 #              file_name = "test_tokenizer"
 #              )
-#
-tokenizer1 = Tokenizer.from_file("C:/Users/thean/Documents/tests/wikitext-103-raw/BERT_tokenizer.json")
-# tokenizer2 = Tokenizer.from_file("C:/Users/thean/Documents/tests/wikitext-103-raw/test_tokenizer.json")
-#
-#print(tokenizer1.encode_batch([["Hello, y'all!", "How are you 😁 ?"], ["Hello to you too!", "I'm fine, thank you!"]]))
 
-#output = tokenizer2.encode("Simple is How are you 😁 ?")
+# encoding_batch(data = [["Hello, y'all!", "How are you doing?"]],
+#                tokenizer_path = "/BERT_tokenizer.json",
+#                 out = True,
+#                 padding = True
+#                )
+
+#tokenizer1 = Tokenizer.from_file("/wikitext-103-raw/BERT_tokenizer.json")
+#tokenizer2 = Tokenizer.from_file("/wikitext-103-raw/test_tokenizer.json")
+
+#output = tokenizer1.encode("Simple is How are you 😁 ?")
 #print(output.tokens)
