@@ -1,16 +1,3 @@
-test_list = [
-    "Beautiful is better than ugly."
-    "Explicit is better than implicit."
-    "Simple is better than complex."
-    "Complex is better than complicated."
-    "Flat is better than nested."
-    "Sparse is better than dense."
-    "Readability counts."
-]
-
-
-
-import torch
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.linear_model import SGDClassifier, LogisticRegression
@@ -35,13 +22,12 @@ SUPPORTED_STEMMER = {
         "LancasterStemmer": LancasterStemmer,
         "PorterStemmer": PorterStemmer,
         "RSLPStemmer":  RSLPStemmer,
-    "SnowballStemmer": SnowballStemmer
+        "SnowballStemmer": SnowballStemmer
 }
 SUPPORTED_LEMMA = {"WordNet": WordNetLemmatizer}
 
-SUPPORTED_VECTORIZER = {
-    "BOW": CountVectorizer,
-    "TFIDF": TfidfVectorizer
+SUPPORTED_VECTORIZER = {"BOW": CountVectorizer,
+                        "TFIDF": TfidfVectorizer
 }
 
 SUPPORTED_MODELS = {"NaiveBayes": MultinomialNB,
@@ -54,16 +40,12 @@ SUPPORTED_MODELS = {"NaiveBayes": MultinomialNB,
 #Processing help function, supports stop word removal, stemmer and lemmatizer from nltk package
 def processing(example, column,stoplist = None, stemmer = None, lemmatizer = None, languageSnowball = 'english'):
     """
+    help function:
     Pre-processing Pipeline with stopword removal, stemmer and lemmatizer
+    Wraps the nltk.stem functions
     :param stoplist: List of stop-words that get removed from the dataset
     :param stemmer: One of the supported Stemmer (nltk)
-            Cistem()
-            LancasterStemmer()
-            PorterStemmer()
-            RSLPStemmer()
-            SnowballStemmer()
     :param lemmatizer: One of the supported Lemmatizer(nltk)
-        WordNetLemmatizer
     """
     stem_list  = word_tokenize(example[column])
 
@@ -84,14 +66,6 @@ def processing(example, column,stoplist = None, stemmer = None, lemmatizer = Non
     stem_list = ' '.join(stem_list)
     example['sentence1'] = stem_list
     return example
-
-#-------------------------------------------------------------------------------------------------------------------------
-#random forest
-
-#-------------------------------------------------------------------------------------------------------------------------
-#logistic regression
-
-#-------------------------------------------------------------------------------------------------------------------------
 
 class nlpipe:
     grid = None
@@ -128,10 +102,17 @@ class nlpipe:
         self.test_data = temp["test"]
 
     def run_token(self,column, batched = False):
+        """
+        Maps the tokenizer on the target column
+        """
         self.data = self.data.map(lambda examples: self.tokenizer(examples[column]),
                                   batched=batched)
 
     def run_processing(self, column,stoplist = None, stemmer = None, lemmatizer = None, languageSnowball = 'english'):
+        """
+        Runs the pre-processing pipeline
+        Wraps the nltk.stem functions
+        """
         self.data = self.data.map(lambda example: processing(example,
                                                              column = column,
                                                              stoplist = stoplist,
@@ -143,6 +124,7 @@ class nlpipe:
 
     def Randomforest(self,feature_column, target_column, extractor, **kwargs):
         """
+        Random forest classifier
         https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html
         """
         if self.train_data is None:
@@ -184,6 +166,10 @@ class nlpipe:
         print(metrics.confusion_matrix(self.test_data[target_column], predicted))
 
     def gridsearch(self, feature_column, target_column,extractor,model, param_grid = None, cv = 5, n_jobs = 1, refit = True, scoring = None, **kwargs):
+        """
+        Uses gridsearchcv to find best hyperparameters
+        https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.GridSearchCV.html
+        """
         if param_grid is None:
             param_grid = self.param_grid
 
@@ -200,10 +186,16 @@ class nlpipe:
         return self.grid
 
     def set_grid(self, param_grid):
+        """
+        Simple function to set parameter grid for the gridsearch function
+        """
         self.param_grid = param_grid
 
     def cv(self, feature_column, target_column,extractor,model, shuffle = False, cv = 5, test_size=0.3, random_state=0, **kwargs):
-
+        """
+        Uses cross_val_score for cross validation
+        https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.cross_val_score.html
+        """
         self.extractor = SUPPORTED_VECTORIZER[extractor]()
         temp = cv
         vec = self.extractor.fit_transform(self.data[feature_column])
@@ -225,7 +217,7 @@ class nlpipe:
 
     def NaiveB(self,feature_column, target_column, extractor, **kwargs):
         """
-        Parameters for MultinomialNB()
+        Multinomial Naive Bayes classifier
         https://scikit-learn.org/stable/modules/generated/sklearn.naive_bayes.MultinomialNB.html#sklearn.naive_bayes.MultinomialNB
         """
         if self.train_data is None:
@@ -246,7 +238,7 @@ class nlpipe:
 
     def logistic(self, feature_column, target_column, extractor, **kwargs):
         """
-        Parameters for LogisticRegression()
+        Logisitc Regression classifier with stochastic gradient descent
         https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.SGDClassifier.html
         'log' loss for logistic regression
         optional parameters for SGD training
@@ -297,6 +289,7 @@ class nlpipe:
                            feature_extractor = None,config = None,framework = None,revision = "main", use_fast = True, use_auth_token = None, *args ,**kwargs):
         """
         decorator for transformer.pipeline
+        Adds a save functionality for the outputs..
         """
 
         tempdict = []

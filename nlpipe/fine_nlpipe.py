@@ -1,6 +1,5 @@
 from transformers import AutoTokenizer
 from datasets import load_dataset
-import torch
 from transformers import (AutoModel,
         AutoModelForCausalLM,
         AutoModelForMaskedLM,
@@ -24,17 +23,6 @@ SUPPORTED_TASKS = {"AutoModel":AutoModel.from_pretrained,
                    "AutoModelForTokenClassification":AutoModelForTokenClassification.from_pretrained
                    }
 
-def check(task):
-    if task in SUPPORTED_TASKS:
-        task = SUPPORTED_TASKS[task]
-        targeted_task = task["pt"]
-        task_options = task["default"]
-    return task
-
-
-
-
-
 class fine_nlpipe:
 
     train_data = None
@@ -54,7 +42,7 @@ class fine_nlpipe:
         """
         self.data = load_dataset(*args, **kwargs)
 
-    def split_data(self,train_size = 1, test_size = 1, seed = 1234 , **kwargs):
+    def split_data(self,train_size = 1, test_size = 1, seed = 1234 ):
         """
         Splits a dataset object with loading script into train and test split
         """

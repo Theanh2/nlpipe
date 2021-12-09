@@ -1,15 +1,5 @@
 #TOKENIZER PIPELINE
 
-#Train a tokenizer
-test_list = [
-    "Beautiful is better than ugly."
-    "Explicit is better than implicit."
-    "Simple is better than complex."
-    "Complex is better than complicated."
-    "Flat is better than nested."
-    "Sparse is better than dense."
-    "Readability counts."
-]
 import os
 from tokenizers import Tokenizer, models, normalizers, pre_tokenizers, decoders, trainers
 from tokenizers.normalizers import Lowercase, NFC, NFD, NFKC, NFKD, Nmt, StripAccents
@@ -159,16 +149,12 @@ def Init_token(token, **kwargs):
 #-------------------------------------------------------------------------------------------------------------------------
 
 def Init_post_token(tokenizer,post, **kwargs):
-
+    """
+    Set post-processor
+    """
     tokenizer.post_processor = SUPPORTED_POSTPROCESSOR[post](**kwargs)
     return (tokenizer)
 
-        # single="[CLS] $A [SEP]",
-        # pair="[CLS] $A [SEP] $B:1 [SEP]:1",
-        # special_tokens=[
-        #     ("[CLS]", 1),
-        #     ("[SEP]", 2),
-        # ]
 #-------------------------------------------------------------------------------------------------------------------------
 
 def Init_trainer(trainer, **kwargs):
@@ -269,7 +255,10 @@ def token_nlpipe(
     return tokenizer
 
 def encoding_batch(data, tokenizer_path = None, padding = False,pad_id =3, pad_token = "[PAD]", out = False, **kwargs):
-
+    """
+    Wrapper for the encoding_batch() function:
+    https://huggingface.co/docs/tokenizers/python/latest/api/reference.html#encoding
+    """
     if tokenizer_path is not None:
         tokenizer = Tokenizer.from_file(tokenizer_path)
 
@@ -311,7 +300,6 @@ def encoding_batch(data, tokenizer_path = None, padding = False,pad_id =3, pad_t
 # encoding_batch(data = [["Hello, y'all!", "How are you doing?"]],
 #                tokenizer_path = "/BERT_tokenizer.json",
 #                 out = True,
-#                 padding = True
 #                )
 
 #tokenizer1 = Tokenizer.from_file("/wikitext-103-raw/BERT_tokenizer.json")
