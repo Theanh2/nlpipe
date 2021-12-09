@@ -20,6 +20,7 @@ Especially for beginners it can be easier to set up the virtual environment with
 - Scikit-learn
 - datasets
 - tokenizers
+- nltk
 
 ## Usage
 For more information about the Pipelines you can read my bachelor's thesis.
