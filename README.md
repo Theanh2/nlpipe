@@ -1,6 +1,6 @@
 PROGRAMMING A PIPELINE FOR NATURAL LANGUAGE PROCESSING
-> As part of my bachelor's thesis, I program multiple Pipelines for the use in natural language processing.
-> The main focus is user friendly code that can be run with even without deep knowledge about language processing, while maintaining the modularity to change hyper/parameter and techniques as you like.
+> I program multiple Pipelines for the use in natural language processing.
+> The main focus is user friendly code that can be run without deep knowledge about language processing, while maintaining the modularity to change hyper/parameter and techniques as you like.
 
 ## Table of Contents
 * [General Info](#general-information)
