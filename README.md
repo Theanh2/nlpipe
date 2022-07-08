@@ -10,7 +10,7 @@ PROGRAMMING A PIPELINE FOR NATURAL LANGUAGE PROCESSING
 * [Contact](#contact)
 
 ## General Information
-These Pipelines are written as part of my bachelor's thesis and supervised by Prof. Dr. Christian Heumann and Dr. Matthias Aßenmacher
+These Pipelines are written as part of my bachelor's thesis and supervised by Prof. Dr. Christian Heumann and Dr. Matthias Aßenmacher.
 The goal of the pipelines is to simplify the use of natural language processing techniques. There exist a wide array of good packages but there is not a unified API for all of them.
 These Pipelines wrap a lot of them together, so that it is more manageable and add a few more functionalities and quality of life features to the wrapped functions.
 Especially for beginners it can be easier to set up the virtual environment with a requirement file and a flowchart-like workflow.
